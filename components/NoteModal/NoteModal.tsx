@@ -2,6 +2,7 @@ import css from "./NoteModal.module.css";
 import { createPortal } from "react-dom";
 import { useEffect } from "react";
 
+
 interface NoteModalProps {
   onClose: () => void;
   children: React.ReactNode;
@@ -13,6 +14,7 @@ export default function NoteModal({ onClose, children }: NoteModalProps) {
       onClose();
     }
   };
+
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
