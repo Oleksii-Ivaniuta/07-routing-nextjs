@@ -9,6 +9,7 @@ import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import { Note } from '@/types/note';
+import NoteForm from '@/components/NoteForm/NoteForm';
 
 interface NotesClientProps {
   initialResponse: {
@@ -69,7 +70,7 @@ export default function NotesClient({initialResponse, tag} : NotesClientProps) {
         </button>
       </header>
       {loadNotes.isSuccess && <NoteList notes={loadNotes.data.notes} />}
-      {modalOpen && <NoteModal onClose={modalCloseFn} />}
+      {modalOpen && <NoteModal onClose={modalCloseFn}>{<NoteForm onClose={modalCloseFn}/>}</NoteModal>}
     </div>
   );
 }
