@@ -1,45 +1,28 @@
-'use client';
-import css from './NotePreview.module.css';
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
-import { fetchNoteById } from '@/lib/api';
-import NoteModal from '@/components/Modal/Modal';
-import { useRouter } from 'next/navigation';
+import {
+  QueryClient,
+  HydrationBoundary,
+  dehydrate,
+} from "@tanstack/react-query";
+import { fetchNoteById } from "@/lib/api";
+import NotePreviewClient from "./NotePreview.client";
 
-export default function NoteDatailsModal() {
-      const router = useRouter();
-      const back = () => router.back;
-  const { id } = useParams<{ id: string }>();
-  const {
-    data: note,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ['note', id],
+interface  NoteDetailsProps {
+  params: Promise<{ id: string }>;
+};
+
+export default async function NotePreview({params} : NoteDetailsProps) {
+  const { id } = await params;
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ["note", id],
     queryFn: () => fetchNoteById(parseInt(id)),
-    refetchOnMount: false,
   });
 
-  if (isLoading) return <p>Loading, please wait...</p>;
-
-  if (error || !note) return <p>Something went wrong.</p>;
-
-  const formattedDate = note.updatedAt
-    ? `Updated at: ${note.updatedAt}`
-    : `Created at: ${note.createdAt}`;
 
   return (
-    <NoteModal onClose={back()}>
-      <div className={css.container}>
-        <div className={css.item}>
-          <div className={css.header}>
-            <h2>{note.title}</h2>
-            <button onClick={back()} className={css.backBtn}>Back</button>
-          </div>
-          <p className={css.content}>{note.content}</p>
-          <p className={css.date}>{formattedDate}</p>
-        </div>
-      </div>
-    </NoteModal>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <NotePreviewClient />
+    </HydrationBoundary>
   );
-}
+};
