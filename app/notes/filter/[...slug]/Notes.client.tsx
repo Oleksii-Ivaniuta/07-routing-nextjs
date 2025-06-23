@@ -1,5 +1,5 @@
 'use client';
-import { fetchNotes } from '../../lib/api';
+import { fetchNotes } from '@/lib/api';
 import NoteList from '@/components/NoteList/NoteList';
 import NoteModal from '@/components/NoteModal/NoteModal';
 import Pagination from '@/components/Pagination/Pagination';
@@ -15,9 +15,10 @@ interface NotesClientProps {
     notes: Note[],
     totalPages: number
   }
+  tag: string | undefined,
 }
 
-export default function NotesClient({initialResponse} : NotesClientProps) {
+export default function NotesClient({initialResponse, tag} : NotesClientProps) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [query, setQuery] = useState<string>('');
   const [debouncedQuery] = useDebounce<string>(query, 1000);
@@ -25,10 +26,10 @@ export default function NotesClient({initialResponse} : NotesClientProps) {
 
   const loadNotes = useQuery({
     queryKey: ['Notes', debouncedQuery, currentPage],
-    queryFn: () => fetchNotes(debouncedQuery, currentPage),
+    queryFn: () => fetchNotes(debouncedQuery, currentPage, tag),
     initialData: initialResponse,
     placeholderData: keepPreviousData,
-    refetchOnMount: false,
+    refetchOnMount: true,
     });
 
   const modalOpenFn = (): void => {
