@@ -26,11 +26,11 @@ export default function NotesClient({initialResponse, tag} : NotesClientProps) {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const loadNotes = useQuery({
-    queryKey: ['Notes', debouncedQuery, currentPage],
+    queryKey: ['Notes', debouncedQuery, currentPage, tag],
     queryFn: () => fetchNotes(debouncedQuery, currentPage, tag),
     initialData: initialResponse,
     placeholderData: keepPreviousData,
-    refetchOnMount: true,
+    refetchOnMount: false,
     });
 
   const modalOpenFn = (): void => {

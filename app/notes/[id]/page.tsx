@@ -15,7 +15,7 @@ import {
     const queryClient = new QueryClient();
   
     await queryClient.prefetchQuery({
-      queryKey: ["note", id],
+      queryKey: ["Note", parseInt(id)],
       queryFn: () => fetchNoteById(parseInt(id)),
     });
   

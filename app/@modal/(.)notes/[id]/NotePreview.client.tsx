@@ -8,14 +8,14 @@ import { useRouter } from 'next/navigation';
 
 export default function NotePreviewClient() {
       const router = useRouter();
-      const back = () => router.back;
+      const goBack = () => router.back();
   const { id } = useParams<{ id: string }>();
   const {
     data: note,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ['note', id],
+    queryKey: ['Note', parseInt(id)],
     queryFn: () => fetchNoteById(parseInt(id)),
     refetchOnMount: false,
   });
@@ -29,12 +29,12 @@ export default function NotePreviewClient() {
     : `Created at: ${note.createdAt}`;
 
   return (
-    <NoteModal onClose={back()}>
+    <NoteModal onClose={() => goBack()}>
       <div className={css.container}>
         <div className={css.item}>
           <div className={css.header}>
             <h2>{note.title}</h2>
-            <button onClick={back()} className={css.backBtn}>Back</button>
+            <button onClick={() => goBack()} className={css.backBtn}>Back</button>
           </div>
           <p className={css.content}>{note.content}</p>
           <p className={css.date}>{formattedDate}</p>
